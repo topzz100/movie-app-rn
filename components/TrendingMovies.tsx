@@ -69,7 +69,14 @@
 
 // export default TrendingMovies;
 
-import { View, Text, Image, Dimensions, TouchableWithoutFeedback } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  Dimensions,
+  TouchableWithoutFeedback,
+  TouchableOpacity,
+} from 'react-native';
 import React from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, { interpolate, useAnimatedStyle } from 'react-native-reanimated';
@@ -90,18 +97,18 @@ const dataValues = [
   { id: 5, uri: 'https://picsum.photos/id/1043/800/600' },
 ];
 
-const TrendingMovies = () => {
+const TrendingMovies = ({ data }: any) => {
   const navigation = useNavigation<any>();
   const handleClick = (item: any) => {
-    //navigation.navigate('Movie', item);
-    console.log(item);
+    navigation.navigate('Movie', item);
+    //console.log(item);
   };
   return (
-    <View className="">
+    <View className="mb-8">
       <Text className="mx-4 mb-4 text-xl text-white">Trending</Text>
       <View style={{}}>
         <Carousel
-          loop={false}
+          //loop
           width={SCREEN_WIDTH} // Full screen width for carousel
           height={ITEM_HEIGHT}
           data={dataValues}
@@ -120,7 +127,7 @@ const TrendingMovies = () => {
             });
 
             return (
-              <TouchableWithoutFeedback
+              <TouchableOpacity
                 onPress={() => handleClick(item)}
                 style={{
                   flex: 1,
@@ -141,11 +148,12 @@ const TrendingMovies = () => {
                   ]}>
                   <Image
                     source={{ uri: item.uri }}
+                    className="rounded-3xl"
                     style={{ width: '100%', height: '100%' }}
                     resizeMode="cover"
                   />
                 </Animated.View>
-              </TouchableWithoutFeedback>
+              </TouchableOpacity>
             );
           }}
         />
