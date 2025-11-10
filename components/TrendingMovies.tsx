@@ -76,12 +76,14 @@ import {
   Dimensions,
   TouchableWithoutFeedback,
   TouchableOpacity,
+  Pressable,
 } from 'react-native';
 import React from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, { interpolate, useAnimatedStyle } from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
 import { useNavigation } from '@react-navigation/native';
+import { image500 } from 'api/moviedb';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -111,7 +113,7 @@ const TrendingMovies = ({ data }: any) => {
           //loop
           width={SCREEN_WIDTH} // Full screen width for carousel
           height={ITEM_HEIGHT}
-          data={dataValues}
+          data={data}
           mode="parallax"
           snapEnabled
           style={{ height: ITEM_HEIGHT }} // Force fixed height
@@ -119,15 +121,16 @@ const TrendingMovies = ({ data }: any) => {
             parallaxScrollingScale: 1,
             parallaxScrollingOffset: 120,
           }}
-          renderItem={({ item, animationValue }) => {
+          renderItem={({ item, animationValue }: any) => {
             const animatedStyle = useAnimatedStyle(() => {
               const scale = interpolate(animationValue.value, [-1, 0, 1], [0.85, 1, 0.85]);
               const opacity = interpolate(animationValue.value, [-1, 0, 1], [0.6, 1, 0.6]);
               return { transform: [{ scale }], opacity };
             });
+            //console.log(item.poster_path, 'path');
 
             return (
-              <TouchableOpacity
+              <Pressable
                 onPress={() => handleClick(item)}
                 style={{
                   flex: 1,
@@ -146,14 +149,16 @@ const TrendingMovies = ({ data }: any) => {
                     },
                     animatedStyle,
                   ]}>
-                  <Image
-                    source={{ uri: item.uri }}
-                    className="rounded-3xl"
-                    style={{ width: '100%', height: '100%' }}
-                    resizeMode="cover"
-                  />
+                  {image500(item.poster_path) ? (
+                    <Image
+                      source={{ uri: image500(item?.poster_path) }}
+                      className="rounded-3xl"
+                      style={{ width: '100%', height: '100%' }}
+                      resizeMode="cover"
+                    />
+                  ) : null}
                 </Animated.View>
-              </TouchableOpacity>
+              </Pressable>
             );
           }}
         />

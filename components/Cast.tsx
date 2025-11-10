@@ -1,6 +1,7 @@
 import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
 import React from 'react';
 import { ItemLayout } from 'react-native-reanimated-carousel/lib/typescript/components/ItemLayout';
+import { image185 } from 'api/moviedb';
 
 const castData = [
   {
@@ -73,20 +74,25 @@ export default function Cast({ casts, navigation }: any) {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 15 }}>
         {casts &&
-          castData.map((item, index) => {
+          casts.map((item: any, index: any) => {
             return (
               <TouchableOpacity
                 onPress={() => navigation.navigate('Person', item)}
                 key={index}
                 className=" w-24 items-center">
                 <View className="h-20 w-20 items-center overflow-hidden rounded-full border border-neutral-500">
-                  <Image source={{ uri: item.image }} className="h-24 w-full rounded-2xl" />
+                  <Image
+                    source={{
+                      uri: image185(item.profile_path) || 'https://i.pravatar.cc/300?img=33',
+                    }}
+                    className="h-24 w-full rounded-2xl"
+                  />
                 </View>
                 <Text numberOfLines={1} className="mt-1 text-xs text-white">
                   {item.character}
                 </Text>
                 <Text numberOfLines={1} className="mt-1 text-xs text-neutral-400">
-                  {item.name}
+                  {item.original_name}
                 </Text>
               </TouchableOpacity>
             );

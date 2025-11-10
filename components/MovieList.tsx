@@ -10,6 +10,7 @@ import {
 import React from 'react';
 import { styles } from 'theme';
 import { useNavigation } from '@react-navigation/native';
+import { image185 } from 'api/moviedb';
 
 const { width, height } = Dimensions.get('window');
 
@@ -42,17 +43,17 @@ export default function MovieList({ data, title, hideSeeAll = false }: any) {
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 15 }}>
-        {dataValues.map((item, index) => {
+        {data?.map((item: any, index: any) => {
           return (
             <TouchableWithoutFeedback key={index} onPress={() => handleClick(item)}>
               <View style={{ width: width * 0.33 }} className="mr-4 space-y-1">
                 <Image
-                  source={{ uri: item.uri }}
+                  source={{ uri: image185(item?.poster_path) }}
                   className="rounded-3xl"
                   style={{ width: '100%', height: height * 0.22 }}
                 />
                 <Text numberOfLines={1} className="ml-1 text-neutral-300">
-                  {item.name}
+                  {item?.title}
                 </Text>
               </View>
             </TouchableWithoutFeedback>

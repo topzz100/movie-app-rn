@@ -12,6 +12,7 @@ import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { XMarkIcon } from 'react-native-heroicons/outline';
 import { useNavigation } from '@react-navigation/native';
+import Loading from 'components/Loading';
 
 const dataValues = [
   { id: 1, uri: 'https://picsum.photos/id/1018/800/600', name: 'lorem ipsum222 ksla;j' },
@@ -23,6 +24,7 @@ const dataValues = [
 const { width, height } = Dimensions.get('window');
 export default function SearchScreen() {
   const navigation = useNavigation<any>();
+  const [loading, setLoading] = useState(false);
   return (
     <SafeAreaView className="flex-1 bg-neutral-800">
       <View className="mx-4 mb-3 flex-row items-center justify-between rounded-full border border-neutral-500">
@@ -38,7 +40,9 @@ export default function SearchScreen() {
         </TouchableOpacity>
       </View>
       {/* Results */}
-      {dataValues.length < 0 ? (
+      {loading ? (
+        <Loading />
+      ) : dataValues.length < 0 ? (
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ marginHorizontal: 15 }}
