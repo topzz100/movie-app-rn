@@ -8,11 +8,13 @@ import {
   TouchableWithoutFeedback,
   Image,
 } from 'react-native';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { XMarkIcon } from 'react-native-heroicons/outline';
 import { useNavigation } from '@react-navigation/native';
 import Loading from 'components/Loading';
+import { debounce } from 'lodash';
+import { image185, searchMovies } from 'api/moviedb';
 
 const dataValues = [
   { id: 1, uri: 'https://picsum.photos/id/1018/800/600', name: 'lorem ipsum222 ksla;j' },
@@ -25,10 +27,33 @@ const { width, height } = Dimensions.get('window');
 export default function SearchScreen() {
   const navigation = useNavigation<any>();
   const [loading, setLoading] = useState(false);
+  const [results, setResults] = useState([]);
+
+  const handleSearch = (value: string) => {
+    if (value && value.length > 2) {
+      setLoading(true);
+      searchMovies({ query: value, include_adult: false, language: 'en-US', page: 1 }).then(
+        (data) => {
+          setLoading(false);
+          console.log(data, 'movies');
+          if (data && data.results) {
+            setResults(data.results);
+          }
+        }
+      );
+    } else {
+      setLoading(false);
+      setResults([]);
+    }
+  };
+
+  const handleSearchTextDebounce = useCallback(debounce(handleSearch, 500), []);
+
   return (
     <SafeAreaView className="flex-1 bg-neutral-800">
       <View className="mx-4 mb-3 flex-row items-center justify-between rounded-full border border-neutral-500">
         <TextInput
+          onChangeText={handleSearchTextDebounce}
           placeholder="Search Movie"
           placeholderTextColor={'lightgray'}
           className="h-full flex-1 pl-6 text-base font-semibold tracking-wider text-white"
@@ -42,14 +67,14 @@ export default function SearchScreen() {
       {/* Results */}
       {loading ? (
         <Loading />
-      ) : dataValues.length < 0 ? (
+      ) : results?.length > 0 ? (
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ marginHorizontal: 15 }}
           className="gap-3">
           <Text className="ml-1 font-semibold text-white">Results ({dataValues.length})</Text>
           <View className="mt-4 flex-row flex-wrap justify-between">
-            {dataValues.map((item, index) => {
+            {results.map((item: any, index: any) => {
               return (
                 <TouchableWithoutFeedback
                   key={index}
@@ -57,10 +82,10 @@ export default function SearchScreen() {
                   <View className="mb-4 space-y-2">
                     <Image
                       className="rounded-3xl"
-                      source={{ uri: item.uri }}
+                      source={{ uri: image185(item?.poster_path) }}
                       style={{ width: width * 0.44, height: height * 0.33 }}
                     />
-                    <Text className="ml-1 text-neutral-300">{item.name}</Text>
+                    <Text className="ml-1 text-neutral-300">{item?.title}</Text>
                   </View>
                 </TouchableWithoutFeedback>
               );

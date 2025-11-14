@@ -16,8 +16,8 @@ export default function MovieScreen() {
   const { params: item } = useRoute<any>();
   const navigation = useNavigation<any>();
   const [isFavourite, setIsFavourite] = useState(false);
-  const [casts, setCasts] = useState();
-  const [similar, setSimilar] = useState([1, 2, 3]);
+  const [casts, setCasts] = useState<any>([]);
+  const [similar, setSimilar] = useState([]);
   const [loading, setLoading] = useState(false);
   const [movie, setMovie] = useState<any>({});
   useEffect(() => {
@@ -113,10 +113,12 @@ export default function MovieScreen() {
           </View>
 
           {/* Casts */}
-          <Cast casts={casts} navigation={navigation} />
+          {casts?.length > 0 && <Cast casts={casts} navigation={navigation} />}
 
           {/* Similar movies */}
-          <MovieList data={similar} title="Similar Movies" hideSeeAll={true} />
+          {similar?.length > 0 && (
+            <MovieList data={similar} title="Similar Movies" hideSeeAll={true} />
+          )}
         </View>
       )}
     </ScrollView>
